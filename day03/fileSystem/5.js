@@ -22,10 +22,10 @@ var fs = require('fs');
 //         console.log(arguments);
 //     }
 // });
-fs.stat('2new.txt', function(err) {
-    if (err) {
-        console.log(err);
-    } else {
-        console.log(arguments);
-    }
-})
+// fs.stat('2new.txt', function(err) {
+//     if (err) {
+//         console.log(err);
+//     } else {
+//         console.log(arguments);
+//     }
+// });
