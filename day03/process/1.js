@@ -4,4 +4,5 @@
 // console.log(process);
 // console.log(global.process);
 
-cons
+// console.log(process.env);
+console.log(process.argv);
