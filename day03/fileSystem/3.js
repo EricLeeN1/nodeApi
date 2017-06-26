@@ -29,5 +29,8 @@ fs.open('1.txt', 'r+', (err, fd) => {
         //     }
         // })
         fs.write(fd, '1234', 5, 'utf-8');
+        fs.close(fd, () => {
+            console.log("文件关闭了")
+        });
     }
 })
