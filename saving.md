@@ -41,8 +41,13 @@
 		
 	5. `req`: 
 		1. `req.url` -> 表示用户的请求URL地址，所有的路由设计，都是通过req.url来实现的。我们比较关心的不是拿不到URL,而是识别这个URL
-		2. 识别URl，用到两个新模块，第一个url模块，第二个是querystring模块
-			1. url->`var url = require('url');`
-				1. `url.parse`
-			2. querystring
+		2. 识别URl，用到两个新模块，第一个url模块，第二个是querystring模块(貌似已废弃,因为url模块足够了)
+			1. url
+				1. 引包->`var url = require('url');`
+				2. `url.parse` -> url.parse可以将一个完整的URL地址，分为很多部分
+					1. 例如:`host/port/pathname/path/search/query`
+				3. `var query = url.parse(req.url, true).query;` -> 如果第二个参数为true，那么就可以将所有的查询变为对象,就可以直接打点得到参数
+					1. 例如:`age = query.age;`
+			2. querystring->已废弃貌似,不用考虑了
 				1. `querystring.parse`
+	6. 实例参考图lizi.png
