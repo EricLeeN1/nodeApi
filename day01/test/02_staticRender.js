@@ -6,22 +6,22 @@ var fs = require('fs');
 
 var server = http.createServer(function(req, res) {
     if (req.url == '/fang') {
-        fs.readFile('./test.html', function(err, data) {
+        fs.readFile('./test/hehe.html', function(err, data) {
             res.writeHead(200, { 'Content-Type': 'text/html;charset=UTF-8' });
             res.end(data);
         });
     } else if (req.url == '/yuan') {
-        fs.readFile('./haha.html', function(err, data) {
+        fs.readFile('./test/haha.html', function(err, data) {
             res.writeHead(200, { 'Content-Type': 'text/html;charset=UTF-8' });
             res.end(data);
         });
     } else if (req.url == '/1.jpg') {
-        fs.readFile('./1.jpg', function(err, data) {
+        fs.readFile('./test/1.jpg', function(err, data) {
             res.writeHead(200, { 'Content-Type': 'image/jpg' });
             res.end(data);
         });
     } else if (req.url == '/bbbb.css') {
-        fs.readFile('./css.css', function(err, data) {
+        fs.readFile('./test/css.css', function(err, data) {
             res.writeHead(200, { 'Content-Type': 'text/css' });
             res.end(data);
         });
