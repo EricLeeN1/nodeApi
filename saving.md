@@ -53,3 +53,6 @@
 	6. 实例参考图lizi.png
 
 ## 2、fs模块
+	
+	1. 引包
+		1. `var fs = require('fs');`
