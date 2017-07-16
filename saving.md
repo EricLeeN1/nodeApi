@@ -26,8 +26,8 @@
 	让Node.js提供静态服务都非常难
 	相对目录相对的是盘符路径 
 	URl和真实物理文件，是没有关系的。URl是通过了Node的顶层路由设计，呈递某一个静态文件的
-
-# 二、HTTP模块
+# 二、Node部分模块
+## 1、HTTP模块
 
 	Node.js中，将很多的功能，划分为一个个module模块，
 	具体参考day01->03_http.js
@@ -51,3 +51,5 @@
 			2. querystring->已废弃貌似,不用考虑了
 				1. `querystring.parse`
 	6. 实例参考图lizi.png
+
+## 2、fs模块
