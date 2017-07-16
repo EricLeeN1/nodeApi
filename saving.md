@@ -31,3 +31,18 @@
 
 	Node.js中，将很多的功能，划分为一个个module模块，
 	具体参考day01->03_http.js
+	1. `var http = require('http');` -> 请求http模块
+	2. `var server = http.createServer(function(req, res) {}` -> 创建一个服务器，回调函数表示接收到请求之后做的事情
+	3. `server.listen(3000, '127.0.0.1');` -> 设置服务器端口与地址
+	4. `res`：
+		1. `res.writeHead(200, { 'Content-Type': 'text/html;charset=utf-8' });` =-> 设置响应头。
+		2. `res.end()` -> 每一次必须使用res.end();end里面必须写成字符串格式或者buffer格式
+		3. `res.write('<h2>我是主标题</h3>');` -> 向页面内写入内容
+		
+	5. `req`: 
+		1. `req.url` -> 表示用户的请求URL地址，所有的路由设计，都是通过req.url来实现的。我们比较关心的不是拿不到URL,而是识别这个URL
+		2. 识别URl，用到两个新模块，第一个url模块，第二个是querystring模块
+			1. url->`var url = require('url');`
+				1. `url.parse`
+			2. querystring
+				1. `querystring.parse`
