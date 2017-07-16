@@ -20,6 +20,11 @@ var server = http.createServer(function(req, res) {
             res.writeHead(200, { 'Content-Type': 'image/jpg' });
             res.end(data);
         });
+    } else if (req.url == '/bbbb.css') {
+        fs.readFile('./css.css', function(err, data) {
+            res.writeHead(200, { 'Content-Type': 'text/css' });
+            res.end(data);
+        });
     } else {
         res.writeHead(400, { 'Content-Type': 'text/html;charset=UTF-8' });
         res.end('没有这个页面呦！');
