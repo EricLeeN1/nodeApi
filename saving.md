@@ -56,3 +56,20 @@
 	
 	1. 引包
 		1. `var fs = require('fs');`
+		
+## 3.module模块
+    
+     1. 可以将一个JavaScript文件中，描述一个类。用module.export=构造函数名的方式向外暴露一个类；
+     也就是说js文件和js文件之间有两种合作的模式
+        1. 某一个js文件中，提供了函数，供别人使用，只要暴露函数就行了 exports.msg=msg;
+        2. 某一个js文件，描述了一个类。 module.exports =People;
+     2. `var foo = require('foo.js')`;
+        1. 如果不写./ 那么默认是node_modules文件夹文件
+     3. `var bar = require('bar')`;
+        1. 可以使用文件夹来管理模块，那么Node.js将会去寻找node_modules目录下的bar文件中的index.js文件去执行。
+     4. 每一个模块文件夹中，推荐都写一个package.json文件，这个文件的名字不能改，node将自动读取里面的配置，有一个main项，就是文件入口
+        `{
+           "name": "Eric",
+           "version": "0.0.1",
+           "main": "app.js"
+         }`

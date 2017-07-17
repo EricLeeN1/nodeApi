@@ -1,4 +1,4 @@
-var foo = require('./test/foo');
+var foo = require('./node_modules/foo');
 
 console.log(foo.msg);
 console.log(foo.info);
