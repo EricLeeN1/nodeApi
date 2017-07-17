@@ -1,3 +1,4 @@
+# 前导 npm->node package manage
 # 一、Node部分简介
 
 ## 1.1 node特性 2017/7/13 22:01:30 
@@ -73,3 +74,4 @@
            "version": "0.0.1",
            "main": "app.js"
          }`
+         package.json文件要放到模块文件的根目录去
