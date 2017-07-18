@@ -1,4 +1,9 @@
 # 前导 npm->node package manage
+	
+	1. npm -> node package manage
+	2. npm主要职责
+		1. 安装开发包和管理依赖项
+
 # 一、Node部分简介
 
 ## 1.1 node特性 2017/7/13 22:01:30 
