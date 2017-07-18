@@ -64,7 +64,12 @@
 		1. `var fs = require('fs');`
 		
 ## 3.module模块
-    
+    	
+#### require()中的路径，是从当前这个js文件出发，找到要引入的文件
+	
+	但是,fs等其他模块用到路径的时候，都是相对于cmd命令光标所在位置
+	__dirname
+
      1. 可以将一个JavaScript文件中，描述一个类。用module.export=构造函数名的方式向外暴露一个类；
      也就是说js文件和js文件之间有两种合作的模式
         1. 某一个js文件中，提供了函数，供别人使用，只要暴露函数就行了 exports.msg=msg;
