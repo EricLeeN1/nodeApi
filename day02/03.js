@@ -5,13 +5,14 @@ var path = require('path');
 
 var server = http.createServer(function(req, res) {
     var pathname = url.parse(req.url).pathname;
+    console.log(pathname);
     if (pathname.indexOf('.') == -1) {
-        pathname += '/index.html';
+        pathname += 'index.html';
     }
     console.log(pathname);
     var fileUrl = './' + path.normalize('./static/' + pathname);
     var extname = path.extname(pathname);
-    // console.log(fileUrl, path.normalize('./static/' + pathname));
+    console.log(fileUrl, extname);
     fs.readFile(fileUrl, function(err, data) {
         if (err) {
             res.writeHead(404, { 'Content-type': 'text/html;charset=UTF8' });
@@ -26,7 +27,7 @@ var server = http.createServer(function(req, res) {
 server.listen(3000, '127.0.0.1');
 
 function getMime(extname, callback) {
-    fs.readFile('day02/mime.json', function(err, data) {
+    fs.readFile(__dirname + '/mime.json', function(err, data) {
         if (err) {
             throw err;
             return;
