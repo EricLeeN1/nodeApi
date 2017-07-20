@@ -95,4 +95,11 @@
 ### 提交改名
 	
 	1. 包依赖->fs
-	2. 
+	2. 时间包->silly-datetime
+		1. 使用->`sd.format(new Date(), 'YYYYMMDDHHmmss')`
+
+### 模板引擎->后台模板
+	
+	1. ejs->后台模板引擎
+		1. 
+	2. jade
