@@ -85,3 +85,9 @@
            "main": "app.js"
          }`
          package.json文件要放到模块文件的根目录去
+
+###post 表单提交
+	
+	1. 设置
+		1. `<form enctype="multipart/form-data"  action="http://127.0.0.1:888/dopost" method="post">
+	2. 包依赖->formidable `
