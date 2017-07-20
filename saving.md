@@ -91,3 +91,8 @@
 	1. 设置
 		1. `<form enctype="multipart/form-data"  action="http://127.0.0.1:888/dopost" method="post">
 	2. 包依赖->formidable `
+
+### 提交改名
+	
+	1. 包依赖->fs
+	2. 
