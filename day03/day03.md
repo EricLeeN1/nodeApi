@@ -28,4 +28,15 @@
 			
 ## 4. 中间件
 
-	1. 
+	1. 如果我的get/post函数中，没有next参数，那么就匹配上第一个路由，就不会往下匹配了。如果想往下匹配的话，那么需要写next();
+	2. 地址冲突
+	`app.get('/:username/:id', function(req, res) {
+	console.log('1');
+	res.send('用户信息:' + req.params.username);
+	});
+	app.get('/admin/login', function(req, res) {
+    console.log('2');
+    res.send('管理员登录');
+	});`
+		解决方法
+		1.交换位置。即,express中的所有的路由(中间件)的顺序至关重要，匹配上第一个就不会往下匹配了
