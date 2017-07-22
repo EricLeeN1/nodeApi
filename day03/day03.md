@@ -20,3 +20,4 @@
 	4. 正则表达式可以被使用，正则表达式中，未知部分用圆括号分组，然后可以用`req.params[0]、[1]`
 	5. ：冒号写法
 		1. `app.get('/student/:id',function(req,res){})`
+	6. 适合进行RESTful路由器
