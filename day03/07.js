@@ -18,4 +18,5 @@ app.get('/admin/login', function(req, res) {
     console.log('2');
     res.send('管理员登录');
 });
+app.get()
 app.listen(3000);
