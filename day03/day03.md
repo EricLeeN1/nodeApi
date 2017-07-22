@@ -20,4 +20,12 @@
 	4. 正则表达式可以被使用，正则表达式中，未知部分用圆括号分组，然后可以用`req.params[0]、[1]`
 	5. ：冒号写法
 		1. `app.get('/student/:id',function(req,res){})`
-	6. 适合进行RESTful路由器
+	6. 适合进行RESTful路由器。简单说就是一个路径，http method方法不同。对这个页面的使用也不同
+		例： /student/123456
+			1. get 读取学生信息
+			2. add 添加学生信息
+			3. delete 删除学生信息
+			
+## 4. 中间件
+
+	1. 
