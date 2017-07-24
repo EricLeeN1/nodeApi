@@ -1,0 +1,13 @@
+1. 整体感知Express的路由能力
+2. 整体感知Express的静态资源能力
+3. 整体感知Express的使用模板的能力
+4. 整体感知Express的路由
+5. 表单自己post到自己，同一个网址，get和post的路由
+6. 原生node,a变量不复原
+7. 中间件的顺序很重要，next
+8. app.use()函数
+9. app.use()自己做一个静态资源服务
+10. app.use(express.static('./public')
+11. res.render()和res.send();
+12. get请求
+13. post请求
