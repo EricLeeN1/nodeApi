@@ -11,3 +11,4 @@
 11. res.render()和res.send();
 12. get请求
 13. post请求
+14. jade模板请求
