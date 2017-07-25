@@ -48,3 +48,4 @@
 				小于50分
 			5. db.student.find({$or:[{"score.math":70},{"score.math":71}]}) -> 或匹配
 				分数是70或者71
+			6. db.student.find({"score.math":{$gt:50}}).sort({"score.math":-1,"age":1}) -> 大于匹配
