@@ -1,5 +1,11 @@
 var file = require('../models/file.js');
-exports.showIndex = function (req, res,next) {
+var formidable = require('formidable');
+var path = require('path');
+var fs = require('fs');
+var sd = require('silly-datetime');
+
+
+exports.showIndex = function (req, res, next) {
     // res.render('index', {
     //     "albums": file.getAllAlbums()
     // });
@@ -17,7 +23,7 @@ exports.showIndex = function (req, res,next) {
     });
 };
 // 相册页
-exports.showAlbum = function (req, res,next) {
+exports.showAlbum = function (req, res, next) {
     // 遍历相册中的所有图片
     var albumName = req.params.albumName;
     //具体业务交给module
@@ -31,4 +37,53 @@ exports.showAlbum = function (req, res,next) {
             "images": imagesArray
         });
     });
+};
+//显示上传
+exports.showUp = function (req, res) {
+    // 命令file模块(我们自己写的函数)调用getAllAlbums函数
+    //得到所有文件夹名字之后做的事情，写在回调函数后面
+    file.getAllAlbums(function (err, albums) {
+        res.render("up", {
+            albums: albums
+        });
+    });
+};
+//上传表单
+exports.up = function (req, res) {
+    var form = new formidable.IncomingForm();
+    form.uploadDir = path.normalize(__dirname + "/../tempup/");
+    form.parse(req, function (err, fields, files, next) {
+        //改名
+        if (err) {
+            next();  //这个中间件不受理这个请求了，往下走
+            return;
+        }
+        //判断文件尺寸
+        var size = parseInt(files.imageChange.size);
+        if (size > 1024000) {
+            res.send('图片尺寸应该小于1m');
+            //删除图片
+            fs.unlink(files.imageChange.path,function () {
+
+            });
+            return;
+        }
+        var ttt = sd.format(new Date(), 'YYYYMMDDHHmmss');
+        var ran = parseInt(Math.random() * 89999 + 1000);
+        var extname = path.extname(files.imageChange.name);
+        var wenjianjia = fields.filesChange;
+        var oldPath = files.imageChange.path;
+        var newPath = path.normalize(__dirname + "/../uploads/" + wenjianjia + '/' + ttt + ran + extname);
+
+        fs.rename(oldPath, newPath, function (err) {
+            if (err) {
+                res.send('改名失败');
+                return;
+            }
+            res.send('成功');
+        });
+
+        // res.end(util.inspect({fields: fields, files: files}));
+    });
+    return;
 };

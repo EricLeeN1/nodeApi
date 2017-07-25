@@ -1,4 +1,7 @@
 var fs = require('fs');
+
+//这个函数的callback中含有两个参数，一个是err
+//另一个是所有文件夹名字的array。
 exports.getAllAlbums = function (callback) {
     //找到所有文件夹s
     fs.readdir('./uploads', function (err, files) {
