@@ -34,4 +34,17 @@
 		5. db.student.find() -> 查看集合中的数据
 			1. db.student.insert({"name":"san","age":18});->student就是所谓的集合，集合中存储着很多json
 			2. db. 一个未知的集合名字，这个集合会自动创建
-
+		6. mongoimport --db test --collection restaurants --drop --file primer-dataset.json -> 导入外部数据
+			1. db test -> 想往哪个数据库里面导入
+			2. collection restaurants -> 想往哪个集合里面导入
+			3. file primer-dataset.json -> 哪个文件
+		7. db.student.find() -> 查找数据
+			1. db.student.find({"score.math":70}) -> 精确匹配
+			2. db.student.find({"score.math":70，"age":12}) -> 多个匹配
+				1. 分数70并且年龄12
+			3. db.student.find({"score.math":{$gt:50}}) -> 大于匹配
+				大于50分
+			4. db.student.find({"score.math":{$lt:50}}) -> 小于匹配
+				小于50分
+			5. db.student.find({$or:[{"score.math":70},{"score.math":71}]}) -> 或匹配
+				分数是70或者71
