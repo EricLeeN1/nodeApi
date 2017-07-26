@@ -3,24 +3,30 @@
  */
 //这个模块里面封装了所有对数据库的常用操作
 var MongoClient = require('mongodb').MongoClient;
+var assert = require('assert');
 //不管数据库什么操作，都是先链接数据库，所以我们可以吧连接数据库封装成为函数
 //封装成内部函数
 function _connectDB(callback) {
     var url = 'mongodb://localhost:27018/eric';
     // 连接数据库
     MongoClient.connect(url, function (err, db) {
+        if (err) {
+            callback(err,null);
+            return;
+        }
+        console.log('连接成功');
         callback(err, db);
     })
 }
-_connectDB(function (err, db) {
-//表示连接成功之后要做的事情
-    if (err) {
-        console.log(err);
-        return;
-    }
-    console.log('链接成功');
-});
-
+// _connectDB(function (err, db) {
+// //表示连接成功之后要做的事情
+//     if (err) {
+//         console.log(err);
+//         return;
+//     }
+//     console.log('链接成功');
+// });
+// 插入数据
 exports.insertOne = function (collectionName, json, callback) {
     _connectDB(function (err, db) {
         db.collection(collectionName).insertOne(json, function (err, result) {
@@ -28,4 +34,29 @@ exports.insertOne = function (collectionName, json, callback) {
             db.close();//关闭数据库
         });
     });
+};
+// 查找数据，找到所有数据
+exports.find = function (collectionName, json, callback) {
+    var result = [];
+    if (arguments.length!=3) {
+        callback("find函数接收三个参数",null);
+        return;
+    }
+    //连接数据库，连接之后查找所有
+    _connectDB(function (err, db) {
+        var cursor = db.collection(collectionName).find(json);
+        cursor.each(function (err, doc) {
+            if (err) {
+                callback(err,null);
+                return;
+            }
+            if (doc != null) {
+                result.push(doc);
+                //放入结果数组
+            } else {
+                //遍历结束.没有很多的文档，
+                callback(null,result);
+            }
+        })
+    })
 };

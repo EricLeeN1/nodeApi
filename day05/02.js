@@ -6,9 +6,21 @@ var app = express();
 var db = require('./model/db.js');
 
 app.get('/', function (req, res) {
-    db.insertOne('teacher',{
-        "name":"张三"
+    // db.insertOne('teacher',{
+    //     "name":"张三"
+    // },function (err,result) {
+    //     if (err) {
+    //         console.log(err);
+    //         return;
+    //     }
+    //     res.send(result);
+    // });
+});
+app.get('/du', function (req, res) {
+    db.find('eric',{
+        "name":"哈哈哈"
     },function (err,result) {
+        console.log(result);
         if (err) {
             console.log(err);
             return;
