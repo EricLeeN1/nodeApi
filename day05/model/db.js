@@ -61,6 +61,7 @@ exports.find = function (a, b, c, d) {
         cursor.each(function (err, doc) {
             if (err) {
                 callback(err, null);
+                db.close();//关闭数据库
                 return;
             }
             if (doc != null) {
@@ -69,6 +70,7 @@ exports.find = function (a, b, c, d) {
             } else {
                 //遍历结束.没有很多的文档，
                 callback(null, result);
+                db.close();//关闭数据库
             }
         })
     })
@@ -80,6 +82,7 @@ exports.delete = function (collectionName, json, callback) {
             json,
             function (err, results) {
                 callback(err, results);
+                db.close();//关闭数据库
             })
     });
 };
@@ -87,10 +90,12 @@ exports.delete = function (collectionName, json, callback) {
 //修改的集合，哪个文档，改成什么样，返回函数
 exports.update = function (collectionName, json1,json2, callback) {
     _connectDB(function (err, db) {
-        db.collection(collectionName).deleteMany(
-            json,
+        db.collection(collectionName).updateMany(
+            json1,
+            json2,
             function (err, results) {
                 callback(err, results);
+                db.close();//关闭数据库
             })
     });
 };
