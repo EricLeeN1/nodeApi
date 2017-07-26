@@ -5,7 +5,7 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>小相册</title>
+    <title>留言本</title>
     <link href="css/bootstrap.min.css" rel="stylesheet">
     <style>
         .row h4 {
@@ -77,31 +77,97 @@
     <div class="list-group" id="list-group">
 
     </div>
+    <nav id="page" aria-label="navigation text-center">
+        <ul class="pagination clearfix">
+            <li class="previous">
+                <a href="#" aria-label="Previous">
+                    <span aria-hidden="true">&larr;</span> Older
+                </a>
+            </li>
+
+            <% for (var i = 1; i <= count; i++) { %>
+            <li class="page-number " data-page="<%= i %>"><a href="#"><%= i %></a></li>
+            <% } %>
+            <li class="next">
+                <a href="#" aria-label="Next">
+                    Newer <span aria-hidden="true">&rarr;</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
 </main>
 <script type="text/template" id="list-script">
-    <a href="#" class="list-group-item active">
-        <h4 class="list-group-item-heading"><%= name %></h4>
-        <p class="list-group-item-text"><%= message %></p>
+    <a href="#" class="list-group-item">
+        <h4 class="list-group-item-heading">{{= name }}</h4>
+        <p class="list-group-item-text">{{= message }}<span class="pull-right">{{= time }}</span></p>
     </a>
 </script>
 <script src="js/jquery-1.12.0.min.js"></script>
 <script src="js/bootstrap.min.js"></script>
-<script src="js/underscore-min.js"></script>
+<script src="js/underscore-noConflict.js"></script>
 </body>
 <script>
     $(function () {
-        $.get('/du',function (res) {
-            var json = JSON.parse(res);
-            for (var i = 0;i<json.result.length;i++) {
-                var compiled =_.template($("#list-script").html());
-                var html = compiled({
-                    name:json.result[i].name,
-                    message:json.result[i].message
-                });
-                $("#list-group").append($(html));
+        var nowPage = 1;
+        $('#page .previous').addClass('disabled');
+        $('#page .page-number:first').addClass('active');
+        $("#page .page-number").on('click', function () {
+            var page = parseInt($(this).attr("data-page"));
+            nowPage = page;
+            if (nowPage==1) {
+                $('#page .previous').addClass('disabled');
+            }else {
+                $('#page .previous').removeClass('disabled');
+            }
+//            重新发起请求
+            getMessage(nowPage);
+            $(this).addClass('active').siblings().removeClass('active');
+        });
+        function getMessage(page) {
+            $.get('/du?page=' + (page-1), function (res) {
+//            这里接收的是对象、
+                console.log(res);
+                //得到模板，弄成模板函数
+                var compiled = _.template($("#list-script").html());
+//                清空全部留言中的所有节点
+                $("#list-group").html('');
+                for (var i = 0; i < res.result.length; i++) {
+                    //数据绑定
+                    var html = compiled({
+                        name: res.result[i].name,
+                        message: res.result[i].message,
+                        time: res.result[i].time
+                    });
+                    //dom操作，添加节点
+                    $("#list-group").append($(html));
+                }
+                $("#list-group>a:first-child").addClass('active');
+            })
+        };
+        $("#page .previous").on('click',function () {
+            nowPage=Math.max(nowPage-1,1);
+            if (nowPage==1) {
+                $(this).addClass('disabled');
+            }else {
+                $(this).removeClass('disabled');
+                getMessage(nowPage);
             }
 
-        })
+        });
+        $("#page .next").on('click',function () {
+            var len = $('#page .page-number').length;
+            nowPage=Math.min(nowPage+1,len);
+            console.log(nowPage,len);
+            if (nowPage==len) {
+                $(this).addClass('disabled');
+            }else {
+                $(this).removeClass('disabled');
+            }
+            if(!$(this).hasClass('disabled')){
+                getMessage(nowPage);
+            }
+        });
+        getMessage(nowPage);
         $("#submit").on('click', function () {
             $.post('/submit', {
                 "name": $("#name").val(),
@@ -109,6 +175,18 @@
             }, function (res) {
                 console.log(res);
                 if (res.msgcode == 1) {
+                    //数据库真的存储了，但是当前页面无法显示
+                    var compiled = _.template($("#list-script").html());
+                    var date = new Date();
+                    var time = date.getFullYear() + '-' + (date.getMonth() + 1 < 10 ? ('0' + (date.getMonth() + 1)) : date.getMonth() + 1) + '-' + (date.getDate() < 10 ? ('0' + date.getDate()) : date.getDate() + 1) + '&nbsp;' + (date.getHours() < 10 ? ('0' + date.getHours()) : date.getHours()) + ':' + (date.getMinutes() < 10 ? ('0' + date.getMinutes()) : date.getMinutes());
+                    var html = compiled({
+                        name: $("#name").val(),
+                        message: $("#message").val(),
+                        time: time
+                    });
+                    //dom操作，添加节点
+                    $("#list-group").prepend($(html));
+                    $("#list-group>a").removeClass('active').eq(0).addClass('active');
                     $("#success-alert").fadeIn().children('a').text(res.msg);
                 } else if (res.msgcode == 0) {
                     $("#fail-alert").fadeIn.children('a').text(res.msg);

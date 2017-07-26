@@ -46,7 +46,7 @@ exports.find = function (a, b, c, d) {
     if (arguments.length == 3) {
         // 那么参数args就是callback
         var callback = c;
-        var args = {"pageamount": 10, "limit": 10};
+        var args = {"pageamount": 10, "page": 10, "sort": {"timeStamp": -1}};
     } else if (arguments.length == 4) {
         var callback = d;
         var args = c;
@@ -55,12 +55,14 @@ exports.find = function (a, b, c, d) {
         return;
     }
     //应该省略的条数
-    var skipnumber = args.pageamount * args.page;
+    var skipnumber = args.pageamount * args.page || 0;
     //数目限制
-    var limit = args.pageamount;
+    var limit = args.pageamount || 0;
+    //排序方式
+    var sort = args.sort || {"timeStamp": -1};
     //连接数据库，连接之后查找所有
     _connectDB(function (err, db) {
-        var cursor = db.collection(a).find(b).skip(skipnumber).limit(limit);
+        var cursor = db.collection(a).find(b).sort(sort).skip(skipnumber).limit(limit);
         cursor.each(function (err, doc) {
             if (err) {
                 callback(err, null);
@@ -91,7 +93,7 @@ exports.delete = function (collectionName, json, callback) {
 };
 //修改
 //修改的集合，哪个文档，改成什么样，返回函数
-exports.update = function (collectionName, json1,json2, callback) {
+exports.update = function (collectionName, json1, json2, callback) {
     _connectDB(function (err, db) {
         db.collection(collectionName).updateMany(
             json1,
@@ -102,3 +104,11 @@ exports.update = function (collectionName, json1,json2, callback) {
             })
     });
 };
+exports.count = function (collectionName, callback) {
+    _connectDB(function (err, db) {
+        db.collection(collectionName).count({}).then(function (count) {
+            callback(err,count);
+            db.close();//关闭数据库
+        });
+    });
+}
