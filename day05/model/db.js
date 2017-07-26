@@ -11,7 +11,7 @@ function _connectDB(callback) {
     // 连接数据库
     MongoClient.connect(url, function (err, db) {
         if (err) {
-            callback(err,null);
+            callback(err, null);
             return;
         }
         console.log('连接成功');
@@ -35,19 +35,32 @@ exports.insertOne = function (collectionName, json, callback) {
         });
     });
 };
-// 查找数据，找到所有数据
-exports.find = function (collectionName, json, callback) {
+// 查找数据，找到所有数据。args是个对象{"pageamount":10,"limit":10}
+//参数:collectionName,json,args,callback
+exports.find = function (a, b, c, d) {
+
     var result = [];
-    if (arguments.length!=3) {
-        callback("find函数接收三个参数",null);
+    if (arguments.length == 3) {
+        // 那么参数args就是callback
+        var callback = c;
+        var args = {"pageamount": 10, "limit": 10};
+    } else if (arguments.length == 4) {
+        var callback = d;
+        var args = c;
+    } else {
+        throw new Error('find函数的参数个数是三个或者四个');
         return;
     }
+    //应该省略的条数
+    var skipnumber = args.pageamount * args.page;
+    //数目限制
+    var limit = args.pageamount;
     //连接数据库，连接之后查找所有
     _connectDB(function (err, db) {
-        var cursor = db.collection(collectionName).find(json);
+        var cursor = db.collection(a).find(b).skip(skipnumber).limit(limit);
         cursor.each(function (err, doc) {
             if (err) {
-                callback(err,null);
+                callback(err, null);
                 return;
             }
             if (doc != null) {
@@ -55,8 +68,29 @@ exports.find = function (collectionName, json, callback) {
                 //放入结果数组
             } else {
                 //遍历结束.没有很多的文档，
-                callback(null,result);
+                callback(null, result);
             }
         })
     })
+};
+//删除
+exports.delete = function (collectionName, json, callback) {
+    _connectDB(function (err, db) {
+        db.collection(collectionName).deleteMany(
+            json,
+            function (err, results) {
+                callback(err, results);
+            })
+    });
+};
+//修改
+//修改的集合，哪个文档，改成什么样，返回函数
+exports.update = function (collectionName, json1,json2, callback) {
+    _connectDB(function (err, db) {
+        db.collection(collectionName).deleteMany(
+            json,
+            function (err, results) {
+                callback(err, results);
+            })
+    });
 };
