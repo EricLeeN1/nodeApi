@@ -4,10 +4,13 @@
 //这个模块里面封装了所有对数据库的常用操作
 var MongoClient = require('mongodb').MongoClient;
 var assert = require('assert');
+var settings = require('../setting.js');
 //不管数据库什么操作，都是先链接数据库，所以我们可以吧连接数据库封装成为函数
 //封装成内部函数
 function _connectDB(callback) {
-    var url = 'mongodb://localhost:27018/eric';
+    //从settings文件中读取地址
+    var url = settings.dburl;
+
     // 连接数据库
     MongoClient.connect(url, function (err, db) {
         if (err) {

@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>小相册</title>
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        .row h4 {
+            text-align: center;
+        }
+    </style>
+</head>
+
+<body>
+<nav class="navbar navbar-default">
+    <div class="container">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse"
+                    data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">我的留言本</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+            <ul class="nav navbar-nav">
+                <li class="active"><a href="/">全部留言 <span class="sr-only">(current)</span></a></li>
+                <li><a href="/up">发表</a></li>
+            </ul>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+    <!-- /.container-fluid -->
+</nav>
+<main class="container">
+    <form class="form-horizontal" enctype="multipart/form-data">
+        <div class="form-group">
+            <label for="name" class="col-sm-2 control-label">姓名</label>
+            <div class="col-sm-6">
+                <input type="email" name="name" class="form-control" id="name" placeholder="姓名">
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="message" class="col-sm-2 control-label">留言</label>
+            <div class="col-sm-6">
+                <textarea type="text" rows="3" name="message" class="form-control" id="message"
+                          placeholder="留言"></textarea>
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="col-sm-offset-2 col-sm-6">
+                <button id="submit" type="button" class="btn btn-success">提交</button>
+            </div>
+        </div>
+        <div class="alert alert-warning alert-dismissible" role="alert" id="fail-alert" style="display: none;">
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span
+                        aria-hidden="true">&times;</span></button>
+            <strong>Warning!</strong>
+            <a href="#" class="alert-link"></a>
+        </div>
+        <div class="alert alert-success alert-dismissible" role="alert" id="success-alert" style="display: none;">
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+            <strong>恭喜您!</strong>
+            <a href="#" class="alert-link"></a>
+        </div>
+    </form>
+    <div class="list-group" id="list-group">
+
+    </div>
+</main>
+<script type="text/template" id="list-script">
+    <a href="#" class="list-group-item active">
+        <h4 class="list-group-item-heading"><%= name %></h4>
+        <p class="list-group-item-text"><%= message %></p>
+    </a>
+</script>
+<script src="js/jquery-1.12.0.min.js"></script>
+<script src="js/bootstrap.min.js"></script>
+<script src="js/underscore-min.js"></script>
+</body>
+<script>
+    $(function () {
+        $.get('/du',function (res) {
+            var json = JSON.parse(res);
+            for (var i = 0;i<json.result.length;i++) {
+                var compiled =_.template($("#list-script").html());
+                var html = compiled({
+                    name:json.result[i].name,
+                    message:json.result[i].message
+                });
+                $("#list-group").append($(html));
+            }
+
+        })
+        $("#submit").on('click', function () {
+            $.post('/submit', {
+                "name": $("#name").val(),
+                "message": $("#message").val()
+            }, function (res) {
+                console.log(res);
+                if (res.msgcode == 1) {
+                    $("#success-alert").fadeIn().children('a').text(res.msg);
+                } else if (res.msgcode == 0) {
+                    $("#fail-alert").fadeIn.children('a').text(res.msg);
+                }
+            });
+        });
+    });
+</script>
+</html>
