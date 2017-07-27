@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- 上述3个meta标签*必须*放在最前面，任何其他内容都*必须*跟随其后！ -->
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <link rel="icon" href="/favicon.ico">
+
+    <title>注册页面</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="/css/bootstrap.css" rel="stylesheet">
+
+    <!-- Custom styles for this template -->
+    <link href="/css/jumbotron.css" rel="stylesheet">
+</head>
+
+<body>
+
+<nav class="navbar navbar-inverse navbar-fixed-top">
+    <div class="container">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar"
+                    aria-expanded="false" aria-controls="navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="#">班级说说</a>
+        </div>
+        <div id="navbar" class="navbar-collapse collapse">
+            <ul class="nav navbar-nav">
+                <li><a href="#">全部说说<span class="sr-only">(current)</span></a></li>
+                <li><a href="#">我的说说</a></li>
+                <li class="dropdown">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true"
+                       aria-expanded="false">Dropdown <span class="caret"></span></a>
+                    <ul class="dropdown-menu">
+                        <li><a href="#">Action</a></li>
+                        <li><a href="#">Another action</a></li>
+                        <li><a href="#">Something else here</a></li>
+                        <li role="separator" class="divider"></li>
+                        <li><a href="#">Separated link</a></li>
+                        <li role="separator" class="divider"></li>
+                        <li><a href="#">One more separated link</a></li>
+                    </ul>
+                </li>
+            </ul>
+            <ul class="nav navbar-nav navbar-right">
+                <li class="active"><a href="#">注册</a></li>
+                <li><a href="#">登录</a></li>
+            </ul>
+        </div><!--/.navbar-collapse -->
+    </div>
+</nav>
+
+<div class="container">
+    <!-- Example row of columns -->
+    <div class="row col-lg-8 col-lg-offset-2">
+        <h2 class="text-center">欢迎注册</h2>
+        <form>
+            <div class="form-group">
+                <label for="username">用户名称</label>
+                <input type="text" class="form-control" id="username" placeholder="用户名，可以是中文，不能和别人重复" name="username">
+            </div>
+            <div class="form-group">
+                <label for="password">Password</label>
+                <input type="password" class="form-control" id="password" placeholder="密码长度不小于6位" name="password">
+            </div>
+            <div class="checkbox">
+                <label>
+                    <input id="obey-check" type="checkbox" checked> 我遵守注册规定
+                </label>
+            </div>
+            <button id="register" type="button" class="btn btn-info">Submit</button>
+        </form>
+    </div>
+</div> <!-- /container -->
+<footer class="container">
+    <p>&copy; 2016 Company, Inc.</p>
+</footer>
+
+<!-- Bootstrap core JavaScript
+================================================== -->
+<!-- Placed at the end of the document so the pages load faster -->
+<script src="/js/jquery-1.12.0.min.js"></script>
+<script src="/js/bootstrap.min.js"></script>
+<script>
+    $(function () {
+//ajax提交表单注册
+        $("#register").on('click', function () {
+            $.post('/checkregiser', {
+                "username": $("#username").val(),
+                "password": $("#password").val()
+            }, function (res) {
+                if (res.msgcode == 1) {
+                    //注册成功
+                } else if (res.msgcode == -1) {
+                    //用户名被占用
+                } else {
+
+                }
+            });
+        });
+    });
+
+</script>
+</body>
+</html>
