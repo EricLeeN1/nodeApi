@@ -46,7 +46,7 @@ exports.find = function (a, b, c, d) {
     if (arguments.length == 3) {
         // 那么参数args就是callback
         var callback = c;
-        var args = {"pageamount": 10, "page": 10, "sort": {"timeStamp": -1}};
+        var args = {"pageamount": 0, "page": 0, "sort": {"timeStamp": -1}};
     } else if (arguments.length == 4) {
         var callback = d;
         var args = c;

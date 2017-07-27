@@ -97,10 +97,18 @@
     </nav>
 </main>
 <script type="text/template" id="list-script">
-    <a href="#" class="list-group-item">
-        <h4 class="list-group-item-heading">{{= name }}</h4>
-        <p class="list-group-item-text">{{= message }}<span class="pull-right">{{= time }}</span></p>
-    </a>
+    <div class="panel panel-default" data-id="{{= id}}">
+        <div class="panel-heading">
+            <h3 class="panel-title">{{= name }} <small class="pull-right">{{= time}}</small></h3>
+        </div>
+        <div class="panel-body">
+            <a href="">{{= message}}</a>
+        </div>
+        <div class="panel-footer clearfix">
+            <a href="" data-id="{{= id}}" class="more pull-left text-default">查看更多>></a>
+            <a href="/delete?id={{= id}}" data-id="{{= id}}" class="delete pull-right text-primary">删除</a>
+        </div>
+    </div>
 </script>
 <script src="js/jquery-1.12.0.min.js"></script>
 <script src="js/bootstrap.min.js"></script>
@@ -113,18 +121,25 @@
         $('#page .page-number:first').addClass('active');
         $("#page .page-number").on('click', function () {
             var page = parseInt($(this).attr("data-page"));
+            var len = $('#page .page-number').length;
             nowPage = page;
-            if (nowPage==1) {
+            if (nowPage == 1) {
                 $('#page .previous').addClass('disabled');
-            }else {
+            } else {
                 $('#page .previous').removeClass('disabled');
             }
+            if (nowPage == len) {
+                $('#page .next').addClass('disabled');
+            } else {
+                $('#page .next').removeClass('disabled');
+            }
+
 //            重新发起请求
             getMessage(nowPage);
             $(this).addClass('active').siblings().removeClass('active');
         });
         function getMessage(page) {
-            $.get('/du?page=' + (page-1), function (res) {
+            $.get('/du?page=' + (page - 1), function (res) {
 //            这里接收的是对象、
                 console.log(res);
                 //得到模板，弄成模板函数
@@ -136,34 +151,34 @@
                     var html = compiled({
                         name: res.result[i].name,
                         message: res.result[i].message,
-                        time: res.result[i].time
+                        time: res.result[i].time,
+                        id: res.result[i]._id
                     });
                     //dom操作，添加节点
                     $("#list-group").append($(html));
                 }
-                $("#list-group>a:first-child").addClass('active');
+                $("#list-group>.panel:first-child").addClass('panel-primary');
             })
         };
-        $("#page .previous").on('click',function () {
-            nowPage=Math.max(nowPage-1,1);
-            if (nowPage==1) {
+        $("#page .previous").on('click', function () {
+            nowPage = Math.max(nowPage - 1, 1);
+            if (nowPage == 1) {
                 $(this).addClass('disabled');
-            }else {
-                $(this).removeClass('disabled');
                 getMessage(nowPage);
-            }
-
-        });
-        $("#page .next").on('click',function () {
-            var len = $('#page .page-number').length;
-            nowPage=Math.min(nowPage+1,len);
-            console.log(nowPage,len);
-            if (nowPage==len) {
-                $(this).addClass('disabled');
-            }else {
+            } else {
                 $(this).removeClass('disabled');
             }
-            if(!$(this).hasClass('disabled')){
+        });
+        $("#page .next").on('click', function () {
+            var len = $('#page .page-number').length;
+            nowPage = Math.min(nowPage + 1, len);
+            console.log(nowPage, len);
+            if (nowPage == len) {
+                $(this).addClass('disabled');
+            } else {
+                $(this).removeClass('disabled');
+            }
+            if (!$(this).hasClass('disabled')) {
                 getMessage(nowPage);
             }
         });
@@ -182,11 +197,12 @@
                     var html = compiled({
                         name: $("#name").val(),
                         message: $("#message").val(),
-                        time: time
+                        time: time,
+                        id:''
                     });
                     //dom操作，添加节点
                     $("#list-group").prepend($(html));
-                    $("#list-group>a").removeClass('active').eq(0).addClass('active');
+                    $("#list-group>.panel").removeClass('panel-primary').eq(0).addClass('panel-primary');
                     $("#success-alert").fadeIn().children('a').text(res.msg);
                 } else if (res.msgcode == 0) {
                     $("#fail-alert").fadeIn.children('a').text(res.msg);

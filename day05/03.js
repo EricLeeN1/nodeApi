@@ -6,6 +6,7 @@ var app = express();
 var db = require('./model/db.js');
 var formidable = require('formidable');
 var sd = require('silly-datetime');
+var ObjectId = require('mongodb').ObjectID;
 
 //设置模板引擎
 app.set('view engine', 'ejs');
@@ -14,12 +15,12 @@ app.set('view engine', 'ejs');
 app.use(express.static('./public'));
 //显示留言列表
 app.get('/', function (req, res, next) {
-    db.count('messages',function (err,count) {
-        if(err){
+    db.count('messages', function (err, count) {
+        if (err) {
             console.log(err);
         }
-        res.render('index',{
-            count:Math.ceil(count/2)
+        res.render('index', {
+            count: Math.ceil(count / 2)
         });
     })
 
@@ -31,7 +32,7 @@ app.get('/du', function (req, res, next) {
     var page = parseInt(req.query.page);
     var pagesize = 2;
 
-    db.find('messages', {}, {"pageamount":pagesize, "page": page, "sort": {"timeStamp": -1}}, function (err, result) {
+    db.find('messages', {}, {"pageamount": pagesize, "page": page, "sort": {"timeStamp": -1}}, function (err, result) {
         res.json({"result": result});
     });
 });
@@ -60,13 +61,35 @@ app.post('/submit', function (req, res, next) {
     });
 });
 //得到总数
-app.get('/a',function (req,res) {
-    db.count('messages',function (err,count) {
-        if(err){
+app.get('/a', function (req, res) {
+    db.count('messages', function (err, count) {
+        if (err) {
             console.log(err);
         }
         console.log(count);
         res.send(count.toString());
     })
 })
+//删除留言
+app.get('/delete', function (req, res,next) {
+    var id = req.query.id;
+    // db.find('message',{"_id":Objectid(id)},function (err,result) {
+    //     if (err) {
+    //         res.send('这条数据不存在或已经删除');
+    //         return;
+    //     }else {
+    //         db.delete('message',{"_id":Objectid(id)},function (err,result) {
+    //             console.log(result);
+    //             res.send('这条数据已经删除');
+    //         })
+    //     }
+    // })
+    db.delete("messages",{"_id":ObjectId(id)},function (err,result) {
+        if (err) {
+            console.log(err);
+        }
+        res.redirect('/');//返回首页
+        // res.send('删除成功，两秒后自动返回首页');
+    });
+});
 app.listen(3000);

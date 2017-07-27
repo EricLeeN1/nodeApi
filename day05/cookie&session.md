@@ -1,2 +1,13 @@
-cookie-parser
-express-session
+# 包安装
+
+    1. cookie-parser
+        cookie应用
+    2. express-session
+        express-session应用
+
+# MD5加密
+
+    1. 不管加密多大东西都会加密为32位的字符串，就是密码。并且神器的,数学上能够保证，哪怕你更改1个文字都能有很大变化。
+       tips：md5加密是不能破解的。
+        所谓的破解都是做一个大数据库。把1~9999类似的用md5加密把数据缓存起来。然后进行匹配。
+    2. 需要crypto中间件
