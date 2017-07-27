@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="en-zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>注册页面</title>
+</head>
+<body>
+<div>
+    <h3>注册</h3>
+    <label for="username">
+        用户名称:
+        <input id="username" type="text" name="username">
+    </label><br>
+    <label for="password">
+        用户密码:
+        <input id="password" type="password" name="password">
+    </label><br>
+    <label for="register">
+        <input id="register" type="submit" value="提交">
+    </label><br>
+    <p id="tips" style="display: none"></p>
+</div>
+<script src="js/jquery-1.12.0.min.js"></script>
+<script>
+    $('#register').on('click', function () {
+        $.post('/chenckregister', {
+            "username": $("#username").val(),
+            "password": $("#password").val()
+        }, function (res) {
+            console.log(res);
+            if (res.msgcode == 1) {
+                $("#tips").text(res.msg).fadeIn();
+            } else {
+                $("#tips").text(res.msg).fadeIn();
+            }
+        });
+    });
+</script>
+</body>
+</html>

@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>登录</title>
+</head>
+<body>
+<h3>请登录</h3>
+<form action="/" method="post" enctype="multipart/form-data">
+    用户名：<input type="text" name="username"><br>
+    密码：<input type="password" name="password"><br>
+    <input id="login" type="button" value="提交">
+</form>
+<script src="js/jquery-1.12.0.min.js"></script>
+<script>
+    $('#login').on('click', function () {
+        $.post('/checklogin', {
+            "username": $("#username").val(),
+            "password": $("#password").val()
+        }, function (res) {
+            console.log(res);
+            if (res.msgcode == 1) {
+                $("#tips").text(res.msg).fadeIn();
+            } else {
+                $("#tips").text(res.msg).fadeIn();
+            }
+        });
+    });
+</script>
+</body>
+</html>

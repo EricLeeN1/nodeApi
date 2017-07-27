@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>留言本</title>
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        .row h4 {
+            text-align: center;
+        }
+    </style>
+</head>
+
+<body>
+<nav class="navbar navbar-default">
+    <div class="container">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse"
+                    data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">我的留言本</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+            <ul class="nav navbar-nav">
+                <li class="active"><a href="/">全部留言 <span class="sr-only">(current)</span></a></li>
+                <li><a href="/up">发表</a></li>
+            </ul>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+    <!-- /.container-fluid -->
+</nav>
+<main class="container">
+    <form class="form-horizontal" enctype="multipart/form-data">
+        <div class="form-group">
+            <label for="name" class="col-sm-2 control-label">姓名</label>
+            <div class="col-sm-6">
+                <input type="email" name="name" class="form-control" id="name" placeholder="姓名">
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="message" class="col-sm-2 control-label">留言</label>
+            <div class="col-sm-6">
+                <textarea type="text" rows="3" name="message" class="form-control" id="message"
+                          placeholder="留言"></textarea>
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="col-sm-offset-2 col-sm-6">
+                <button id="submit" type="button" class="btn btn-success">提交</button>
+            </div>
+        </div>
+        <div class="alert alert-warning alert-dismissible" role="alert" id="fail-alert" style="display: none;">
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span
+                        aria-hidden="true">&times;</span></button>
+            <strong>Warning!</strong>
+            <a href="#" class="alert-link"></a>
+        </div>
+        <div class="alert alert-success alert-dismissible" role="alert" id="success-alert" style="display: none;">
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+            <strong>恭喜您!</strong>
+            <a href="#" class="alert-link"></a>
+        </div>
+    </form>
+    <div class="list-group" id="list-group">
+
+    </div>
+    <nav id="page" aria-label="navigation text-center">
+        <ul class="pagination clearfix">
+            <li class="previous">
+                <a href="#" aria-label="Previous">
+                    <span aria-hidden="true">&larr;</span> Older
+                </a>
+            </li>
+
+            <% for (var i = 1; i <= count; i++) { %>
+            <li class="page-number " data-page="<%= i %>"><a href="#"><%= i %></a></li>
+            <% } %>
+            <li class="next">
+                <a href="#" aria-label="Next">
+                    Newer <span aria-hidden="true">&rarr;</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+</main>
+<script type="text/template" id="list-script">
+    <div class="panel panel-default" data-id="{{= id}}">
+        <div class="panel-heading">
+            <h3 class="panel-title">{{= name }} <small class="pull-right">{{= time}}</small></h3>
+        </div>
+        <div class="panel-body">
+            <a href="">{{= message}}</a>
+        </div>
+        <div class="panel-footer clearfix">
+            <a href="" data-id="{{= id}}" class="more pull-left text-default">查看更多>></a>
+            <a href="/delete?id={{= id}}" data-id="{{= id}}" class="delete pull-right text-primary">删除</a>
+        </div>
+    </div>
+</script>
+<script src="js/jquery-1.12.0.min.js"></script>
+<script src="js/bootstrap.min.js"></script>
+<script src="js/underscore-noConflict.js"></script>
+</body>
+<script>
+    $(function () {
+        var nowPage = 1;
+        $('#page .previous').addClass('disabled');
+        $('#page .page-number:first').addClass('active');
+        $("#page .page-number").on('click', function () {
+            var page = parseInt($(this).attr("data-page"));
+            var len = $('#page .page-number').length;
+            nowPage = page;
+            if (nowPage == 1) {
+                $('#page .previous').addClass('disabled');
+            } else {
+                $('#page .previous').removeClass('disabled');
+            }
+            if (nowPage == len) {
+                $('#page .next').addClass('disabled');
+            } else {
+                $('#page .next').removeClass('disabled');
+            }
+
+//            重新发起请求
+            getMessage(nowPage);
+            $(this).addClass('active').siblings().removeClass('active');
+        });
+        function getMessage(page) {
+            $.get('/du?page=' + (page - 1), function (res) {
+//            这里接收的是对象、
+                console.log(res);
+                //得到模板，弄成模板函数
+                var compiled = _.template($("#list-script").html());
+//                清空全部留言中的所有节点
+                $("#list-group").html('');
+                for (var i = 0; i < res.result.length; i++) {
+                    //数据绑定
+                    var html = compiled({
+                        name: res.result[i].name,
+                        message: res.result[i].message,
+                        time: res.result[i].time,
+                        id: res.result[i]._id
+                    });
+                    //dom操作，添加节点
+                    $("#list-group").append($(html));
+                }
+                $("#list-group>.panel:first-child").addClass('panel-primary');
+            })
+        };
+        $("#page .previous").on('click', function () {
+            nowPage = Math.max(nowPage - 1, 1);
+            if (nowPage == 1) {
+                $(this).addClass('disabled');
+                getMessage(nowPage);
+            } else {
+                $(this).removeClass('disabled');
+            }
+        });
+        $("#page .next").on('click', function () {
+            var len = $('#page .page-number').length;
+            nowPage = Math.min(nowPage + 1, len);
+            console.log(nowPage, len);
+            if (nowPage == len) {
+                $(this).addClass('disabled');
+            } else {
+                $(this).removeClass('disabled');
+            }
+            if (!$(this).hasClass('disabled')) {
+                getMessage(nowPage);
+            }
+        });
+        getMessage(nowPage);
+        $("#submit").on('click', function () {
+            $.post('/submit', {
+                "name": $("#name").val(),
+                "message": $("#message").val()
+            }, function (res) {
+                console.log(res);
+                if (res.msgcode == 1) {
+                    //数据库真的存储了，但是当前页面无法显示
+                    var compiled = _.template($("#list-script").html());
+                    var date = new Date();
+                    var time = date.getFullYear() + '-' + (date.getMonth() + 1 < 10 ? ('0' + (date.getMonth() + 1)) : date.getMonth() + 1) + '-' + (date.getDate() < 10 ? ('0' + date.getDate()) : date.getDate() + 1) + '&nbsp;' + (date.getHours() < 10 ? ('0' + date.getHours()) : date.getHours()) + ':' + (date.getMinutes() < 10 ? ('0' + date.getMinutes()) : date.getMinutes());
+                    var html = compiled({
+                        name: $("#name").val(),
+                        message: $("#message").val(),
+                        time: time,
+                        id:''
+                    });
+                    //dom操作，添加节点
+                    $("#list-group").prepend($(html));
+                    $("#list-group>.panel").removeClass('panel-primary').eq(0).addClass('panel-primary');
+                    $("#success-alert").fadeIn().children('a').text(res.msg);
+                } else if (res.msgcode == 0) {
+                    $("#fail-alert").fadeIn.children('a').text(res.msg);
+                }
+            });
+        });
+    });
+</script>
+</html>
