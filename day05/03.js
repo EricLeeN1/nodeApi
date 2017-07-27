@@ -46,6 +46,7 @@ app.post('/submit', function (req, res, next) {
             "timeStamp": Date.parse(new Date()) / 1000
         }, function (err, result) {
             if (err) {
+                console.log(err);
                 res.json({
                     "msgcode": 0,
                     "msg": "提交失败!"
