@@ -7,7 +7,7 @@ app.set('view engine','ejs');
 //静态页面
 app.use(express.static('./public'));
 //路由表
-app.get('/',router.showIndex);
-app.get('/',router.doIndex);
+// app.get('/',router.showIndex);
+// app.get('/',router.doIndex);
 
 app.listen(3000);
