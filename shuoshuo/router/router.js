@@ -12,6 +12,12 @@ exports.showRegister=function (req,res,next) {
 };
 //注册业务
 exports.checkRegister=function (req,res,next) {
-    //得到用户的填写信息
-    //查询数据库中是否存在此人，不存在则添加
+    var form = new formidable.IncomingForm();
+    form.parse(req,function (err,fields,files) {
+        //得到用户的填写信息
+        var username = fields.username;
+        var password = fields.password;
+        console.log(username,password);
+        //查询数据库中是否存在此人，不存在则添加
+    });
 };

@@ -9,5 +9,6 @@ app.use(express.static('./public'));
 //路由表
 app.get('/',router.showIndex);
 app.get('/register',router.showRegister);
+app.post('/checkregister',router.checkRegister);
 
 app.listen(3000);

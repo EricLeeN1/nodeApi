@@ -62,7 +62,7 @@
     <!-- Example row of columns -->
     <div class="row col-lg-8 col-lg-offset-2">
         <h2 class="text-center">欢迎注册</h2>
-        <form>
+        <form enctype="multipart/form-data">
             <div class="form-group">
                 <label for="username">用户名称</label>
                 <input type="text" class="form-control" id="username" placeholder="用户名，可以是中文，不能和别人重复" name="username">
@@ -93,7 +93,7 @@
     $(function () {
 //ajax提交表单注册
         $("#register").on('click', function () {
-            $.post('/checkregiser', {
+            $.post('/checkregister', {
                 "username": $("#username").val(),
                 "password": $("#password").val()
             }, function (res) {
