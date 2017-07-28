@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- 上述3个meta标签*必须*放在最前面，任何其他内容都*必须*跟随其后！ -->
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <link rel="icon" href="/favicon.ico">
+
+    <title>更改头像--班级说说</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="/css/bootstrap.css" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="/css/jquery.Jcrop.css">
+    <script src="/js/jquery-1.12.0.min.js"></script>
+    <script src="/js/jquery.Jcrop.js"></script>
+    <script type="text/javascript" src="/js/xiaoguo.js"></script>
+</head>
+<% include header.ejs %>
+<div class="container">
+    <!-- Example row of columns -->
+    <div class="row col-lg-8 col-lg-offset-2">
+        <h2>裁剪页面</h2>
+        <img src="/avatar/<%= avatar %>" id="target" alt="[Jcrop Example]"/>
+
+        <div id="preview-pane">
+            <div class="preview-container">
+                <img src="/avatar/<%= avatar %>" class="jcrop-preview" alt="Preview"/>
+            </div>
+        </div>
+
+        <input type="button" value="剪裁！！" id="btn">
+
+
+        <script type="text/javascript">
+            $("input").click(function () {
+                var w = parseInt($(".jcrop-holder>div:first").css("width"));
+                var h = parseInt($(".jcrop-holder>div:first").css("height"));
+                var x = parseInt($(".jcrop-holder>div:first").css("left"));
+                var y = parseInt($(".jcrop-holder>div:first").css("top"));
+
+                $.get("/docut",{
+                    "w" : w,
+                    "h" : h,
+                    "x" : x,
+                    "y" : y
+                },function(result){
+                    alert(result);
+                });
+            });
+        </script>
+    </div>
+</div>
+</body>
+</html>
+
