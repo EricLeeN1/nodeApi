@@ -4,33 +4,40 @@
 var formidable = require('formidable');
 var db = require('../models/db.js');
 var md5 = require('../models/md5.js');
+var sd = require('silly-datetime');
+var gm = require('gm');
 var path = require('path');
 var fs = require('fs');
 
 //显示首页
 exports.showIndex = function (req, res, next) {
-    //检索数据库，查找此人头像
+
     if (req.session.login == "1") {
-        db.find("users", {"username": req.session.username}, function (err, result) {
-            var avatar = result[0].avatar || "default.png";
+        var username = req.session.username;
+        var login = true;
+    } else {
+        var username = "";
+        var login = false;
+    }
+    db.find("users", {"username": req.session.username}, function (err, result) {
+        if (result.length == 0) {
+            var avatar = "default.png";
+        } else {
+            var avatar = result[0].avatar;
+        }
+        db.find('blogs',{},function (err,resultblogs) {
             res.render('index', {
-                "login": true,
-                "username": req.session.username,
+                "login": login,
+                "username": username,
                 "active": "index",
-                "avatar": avatar
+                "avatar": avatar,
+                "blogs":resultblogs
             });
         });
-    } else {
-        res.render('index', {
-            "login": false,
-            "username": "",
-            "active": "index",
-            "avatar": "default.png"
-        });
-    }
-
+    });
 };
 //注册页面
+
 exports.showRegister = function (req, res, next) {
     res.render('register', {
         "login": req.session.login == "1" ? true : false,
@@ -61,6 +68,7 @@ exports.checkRegister = function (req, res, next) {
                     });
                     return;
                 } else {
+                    //没有相同的人就可以执行接下来的方法了
                     //设置md5加密
                     password = md5(md5(password) + 'eric');
                     db.insertOne("users", {
@@ -142,7 +150,7 @@ exports.checkLogin = function (req, res, next) {
     });
 };
 //设置头像页面必须保障此时是登录状态
-exports.setAvatar = function (req, res, next) {
+exports.showsetAvatar = function (req, res, next) {
     if (req.session.login != "1") {
         res.send("您还没有登录呢!");
         return;
@@ -155,7 +163,7 @@ exports.setAvatar = function (req, res, next) {
     }
 };
 //设置头像
-exports.cutAvatar = function (req, res, next) {
+exports.showcutAvatar = function (req, res, next) {
     if (req.session.login != "1") {
         res.send("您还没有登录呢!");
         return;
@@ -180,12 +188,92 @@ exports.cutAvatar = function (req, res, next) {
         });
     }
 };
-//设置头像
+//设置切图页面
 exports.showCut = function (req, res) {
     res.render('cut', {
         avatar: req.session.avatar,
         "login": true,
         "username": req.session.username,
         "active": "index"
+    });
+};
+//执行切图
+exports.checkCut = function (req, res) {
+    // 这个页面接收几个get请求参数
+    // w/h/x/y
+    var filename = req.session.avatar;
+    var w = req.query.w;
+    var h = req.query.h;
+    var x = req.query.x;
+    var y = req.query.y;
+    gm('./avatar/' + filename)
+        .crop(w, h, x, y)//宽、高、x、y
+        .resize(100, 100, "!")
+        .write('./avatar/' + filename, function (err) {
+            if (err) {
+                res.json({
+                    "msgcode": -1,
+                    "msg": "裁剪失败"
+                });
+                return;
+            } else {
+                //更改数据库当前用户的avatar
+                db.update('users',
+                    {"username": req.session.username},
+                    {$set: {"avatar": req.session.avatar}},
+                    function (err, result) {
+                        if (err) {
+                            res.json({
+                                "msgcode": -3,
+                                "msg": "服务器错误"
+                            });
+                            return;
+                        } else {
+                            res.json({
+                                "msgcode": 1,
+                                "msg": "图像修改成功",
+                                "data": result
+                            });
+                            return;
+                        }
+
+                    });
+            }
+        });
+};
+
+//发表说说
+exports.publishBlog = function (req, res, next) {
+    if (req.session.login != "1") {
+        res.send("您还没有登录呢!");
+        return;
+    }
+    var username = req.session.username;
+    var form = new formidable.IncomingForm();
+    form.parse(req, function (err, fields, files) {
+        //得到用户的填写信息
+        var content = fields.content,
+            time = Date.parse(new Date()) / 1000,
+            formatTime = sd.format(new Date(), 'YYYY-MM-DD HH:mm:ss');
+        db.insertOne("blogs", {
+            "username": username,
+            "content": content,
+            "time": time,
+            "formatTime":formatTime
+        }, function (err, result) {
+            if (err) {
+                res.json({
+                    "msgcode": -3,
+                    "msg": "服务器错误"
+                });
+                return;
+            } else {
+                res.json({
+                    "msgcode": 1,
+                    "msg": "发表成功!"
+                });
+                return;
+            }
+        })
     });
 };

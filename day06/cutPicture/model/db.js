@@ -3,13 +3,14 @@
  */
 //这个模块里面封装了所有对数据库的常用操作
 var MongoClient = require('mongodb').MongoClient;
-var settings = require('./settings.js');
-
+var assert = require('assert');
+var settings = require('./setting.js');
 //不管数据库什么操作，都是先链接数据库，所以我们可以吧连接数据库封装成为函数
 //封装成内部函数
 function _connectDB(callback) {
     //从settings文件中读取地址
     var url = settings.dburl;
+
     // 连接数据库
     MongoClient.connect(url, function (err, db) {
         if (err) {
@@ -19,28 +20,15 @@ function _connectDB(callback) {
         console.log('连接成功');
         callback(err, db);
     })
-};
-init();
-function init() {
-    //对数据库进行一个初始化
-    _connectDB(function (err, db) {
-        if (err) {
-            console.log(err);
-            return;
-        }
-        db.collection('users').createIndex(
-            {"username": 1},
-            null
-            , function (err, results) {
-                if (err) {
-                    console.log(err);
-                    return;
-                }
-                console.log("索引建立成功！");
-                console.log(results);
-            })
-    })
 }
+// _connectDB(function (err, db) {
+// //表示连接成功之后要做的事情
+//     if (err) {
+//         console.log(err);
+//         return;
+//     }
+//     console.log('链接成功');
+// });
 // 插入数据
 exports.insertOne = function (collectionName, json, callback) {
     _connectDB(function (err, db) {
@@ -119,7 +107,7 @@ exports.update = function (collectionName, json1, json2, callback) {
 exports.count = function (collectionName, callback) {
     _connectDB(function (err, db) {
         db.collection(collectionName).count({}).then(function (count) {
-            callback(err, count);
+            callback(err,count);
             db.close();//关闭数据库
         });
     });

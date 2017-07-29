@@ -3,7 +3,7 @@
 <head>
     <title>Aspect Ratio with Preview Pane | Jcrop Demo</title>
     <meta http-equiv="Content-type" content="text/html;charset=UTF-8"/>
-    <link rel="stylesheet" href="public/css/jquery.Jcrop.css" type="text/css"/>
+    <link rel="stylesheet" href="/css/jquery.Jcrop.css" type="text/css"/>
     <style type="text/css">
 
         /* Apply these styles only when #preview-pane has
@@ -44,16 +44,16 @@
 <body>
 <h3 class="tips"></h3>
 <div class="container">
-    <img src="1.jpg" id="target" alt="[Jcrop Example]"/>
+    <img src="/1.jpg" id="target" alt="[Jcrop Example]"/>
     <div id="preview-pane">
         <div class="preview-container">
-            <img src="1.jpg" class="jcrop-preview" alt="Preview"/>
+            <img src="/1.jpg" class="jcrop-preview" alt="Preview"/>
         </div>
     </div>
     <input id="cut" type="button" value="裁剪">
 </div>
-<script src="public/js/jquery.min.js"></script>
-<script src="public/js/jquery.Jcrop.js"></script>
+<script src="/js/jquery.min.js"></script>
+<script src="/js/jquery.Jcrop.js"></script>
 <script type="text/javascript">
     jQuery(function ($) {
 
@@ -104,13 +104,22 @@
                 $(".tips").html(width + " " + height + " " + marginLeft + " " + marginTop);
             }
         };
-        $('#cut').on('click', function () {
-            var w = $('.jcrop-holder>div:eq(0)').css('width');
-            var h = $('.jcrop-holder>div:eq(0)').css('height');
-            var x = $('.jcrop-holder>div:eq(0)').css('left');
-            var y = $('.jcrop-holder>div:eq(0)').css('top');
-            alert(w + " " + h + " " + x + " " + y);
-        })
+    });
+</script>
+<script>
+    $('#cut').on('click', function () {
+        var w = parseInt($('.jcrop-holder>div:eq(0)').css('width'));
+        var h = parseInt($('.jcrop-holder>div:eq(0)').css('height'));
+        var x = parseInt($('.jcrop-holder>div:eq(0)').css('left'));
+        var y = parseInt($('.jcrop-holder>div:eq(0)').css('top'));
+        $.get('/docut',{
+            "w":w,
+            "h":h,
+            "x":x,
+            "y":y
+        },function (res) {
+            console.log(res);
+        });
     });
 
 </script>

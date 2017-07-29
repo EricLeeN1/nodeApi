@@ -21,8 +21,10 @@ app.get('/register',router.showRegister);
 app.post('/checkregister',router.checkRegister);
 app.get('/login',router.showLogin);
 app.post('/checklogin',router.checkLogin);
-app.get('/setavatar',router.setAvatar);
-app.post('/cutavatar',router.cutAvatar);
+app.get('/setavatar',router.showsetAvatar);
+app.post('/cutavatar',router.showcutAvatar);
 app.get('/cut',router.showCut);
+app.get('/docut',router.checkCut);
+app.post('/publishblog',router.publishBlog);
 
 app.listen(3000);

@@ -16,7 +16,11 @@
 
     <!-- Custom styles for this template -->
     <link href="/css/jumbotron.css" rel="stylesheet">
-
+    <style>
+        .alert {
+            display: none;
+        }
+    </style>
 </head>
 
 <body>
@@ -25,41 +29,92 @@
 
 <!-- Main jumbotron for a primary marketing message or call to action -->
 <div class="jumbotron">
+    <% if(!login){ %>
+    <!--没有登录时候显示登录提示-->
     <div class="container">
-        <h1>
-            <a href="/setavatar"><img src="/avatar/<%= avatar %>" alt=""></a>
-        </h1>
-        <p>This is a template for a simple marketing or informational website. It includes a large callout called a
-            jumbotron and three supporting pieces of content. Use it as a starting point to create something more
-            unique.</p>
-        <p><a class="btn btn-primary btn-lg pull-right" href="#" role="button">Learn more &raquo;</a></p>
+        <div class="row">
+            <div class="col-lg-9 col-md-9">
+                <h1>欢迎!</h1>
+                <p>班级说说是Eric写的一个demo，是一个交流的园地。欢迎注册</p>
+                <p class="clearfix">
+                    <a class="btn btn-primary btn-lg" href="/register" role="button">Register</a>
+                </p>
+            </div>
+            <div class="col-lg-3 col-md-3">
+                <p class="text-center">已有账号登录</p>
+                <form id="login-form" enctype="multipart/form-data">
+                    <div class="form-group">
+                        <label for="username">用户名称</label>
+                        <input type="text" class="form-control" id="username" placeholder="用户名，可以是中文，不能和别人重复"
+                               name="username">
+                    </div>
+                    <div class="form-group">
+                        <label for="password">Password</label>
+                        <input type="password" class="form-control" id="password" placeholder="密码长度不小于6位"
+                               name="password">
+                    </div>
+                    <div class="checkbox">
+                        <label>
+                            <input id="obey-check" type="checkbox" checked> 我遵守本网站规定
+                        </label>
+                    </div>
+                    <button id="login" type="button" class="center-block btn btn-primary">Sign in</button>
+                </form>
+                <div class="alert alert-warning alert-dismissible" role="alert">
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span
+                                aria-hidden="true">&times;</span></button>
+                    <strong>Warning!</strong>
+                    <span></span>
+                </div>
+                <div class="alert alert-success alert-dismissible" role="alert">
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span
+                                aria-hidden="true">&times;</span></button>
+                    <strong>Well done!</strong>
+                    <span></span>
+                </div>
+            </div>
+        </div>
     </div>
+    <% }else{ %>
+    <!--登陆之后显示发言框-->
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-2 col-md-2  col-lg-offset-1 col-md-offset-1">
+                <a href="/setavatar"><img class="center-block img-thumbnail img-responsive" src="/avatar/<%= avatar %>"
+                                          alt=""></a>
+            </div>
+            <div class="col-lg-6 col-md-6">
+                <p>欢迎你:<%= username %></p>
+                <textarea name="content" id="content" cols="80" rows="4" placeholder="说点什么吧!"></textarea>
+                <p><a class="btn btn-success" href="#" role="button" id="publish">Publish Now</a></p>
+                <div class="alert alert-warning alert-dismissible" role="alert">
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span
+                                aria-hidden="true">&times;</span></button>
+                    <strong>Warning!</strong>
+                    <span></span>
+                </div>
+                <div class="alert alert-success alert-dismissible" role="alert">
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span
+                                aria-hidden="true">&times;</span></button>
+                    <strong>Well done!</strong>
+                    <span></span>
+                </div>
+            </div>
+        </div>
+    </div>
+    <% } %>
 </div>
 
 <div class="container">
     <!-- Example row of columns -->
     <div class="row">
+        <% for(var i =0;i<blogs.length;i++){%>
         <div class="col-md-4">
-            <h2>Heading</h2>
-            <p>Donec id elit non mi porta gravida at eget metus. Fusce dapibus, tellus ac cursus commodo, tortor mauris
-                condimentum nibh, ut fermentum massa justo sit amet risus. Etiam porta sem malesuada magna mollis
-                euismod. Donec sed odio dui. </p>
+            <h3><img class="img-respensive" src="/avatar/<%= blogs[i].username %>.jpg" alt=""><%= blogs[i].username%>说:</h3>
+            <p><%= blogs[i].content%></p>
             <p><a class="btn btn-default" href="#" role="button">View details &raquo;</a></p>
         </div>
-        <div class="col-md-4">
-            <h2>Heading</h2>
-            <p>Donec id elit non mi porta gravida at eget metus. Fusce dapibus, tellus ac cursus commodo, tortor mauris
-                condimentum nibh, ut fermentum massa justo sit amet risus. Etiam porta sem malesuada magna mollis
-                euismod. Donec sed odio dui. </p>
-            <p><a class="btn btn-default" href="#" role="button">View details &raquo;</a></p>
-        </div>
-        <div class="col-md-4">
-            <h2>Heading</h2>
-            <p>Donec sed odio dui. Cras justo odio, dapibus ac facilisis in, egestas eget quam. Vestibulum id ligula
-                porta felis euismod semper. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut
-                fermentum massa justo sit amet risus.</p>
-            <p><a class="btn btn-default" href="#" role="button">View details &raquo;</a></p>
-        </div>
+        <%}%>
     </div>
 
     <hr>
@@ -75,5 +130,64 @@
 <!-- Placed at the end of the document so the pages load faster -->
 <script src="/js/jquery-1.12.0.min.js"></script>
 <script src="/js/bootstrap.min.js"></script>
+<script>
+    $(function () {
+//ajax提交表单注册
+        $('input').on('focus', function () {
+            $('.alert').fadeOut();
+        })
+        $("#login").on('click', function () {
+            var password = $('#password').val();
+            var username = $('#username').val();
+            if (password.length < 6) {
+                $('#login-form').siblings('.alert-warning').fadeIn().children('span').text('密码长度不能小于6位!');
+            } else if (username.length < 5 || username.length > 10) {
+                $('#login-form').siblings('.alert-warning').fadeIn().children('span').text('用户名长度在5-10位之间!');
+            } else {
+                $.post('/checklogin', {
+                    "username": username,
+                    "password": password
+                }, function (res) {
+                    console.log(res);
+                    if (res.msgcode == 1) {
+                        //登录成功
+                        $('#login-form').siblings('.alert-success').fadeIn().children('span').html(res.msg);
+                        setTimeout(function () {
+                            window.location.reload();
+                        }, 1000);
+                    } else if (res.msgcode == -1) {
+                        //密码错误
+                        $('#login-form').siblings('.alert-warning').fadeIn().children('span').text(res.msg);
+                    } else {
+                        $('#login-form').siblings('.alert-warning').fadeIn().children('span').text(res.msg);
+                    }
+                });
+            }
+        });
+        $("#publish").on('click', function () {
+            var content = $('#content').val();
+            if (content.length == 0) {
+                $('#content').siblings('.alert-warning').fadeIn().children('span').text('不能为空啊!');
+            } else {
+                $.post('/publishblog', {
+                    "content": content
+                }, function (res) {
+                    console.log(res);
+                    $('.alert').hide();
+                    if (res.msgcode == 1) {
+                        //发表成功
+                        $('#content').siblings('.alert-success').fadeIn().children('span').html(res.msg);
+                        setTimeout(function () {
+//                            window.location.reload();
+                            $('#content').siblings('.alert-success').fadeOut();
+                        }, 1000);
+                    } else {
+                        $('#content').siblings('.alert-warning').fadeIn().children('span').text(res.msg);
+                    }
+                });
+            }
+        });
+    });
+</script>
 </body>
 </html>
