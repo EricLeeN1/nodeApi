@@ -38,7 +38,7 @@ app.get('/check', function (req,res,next) {
     res.redirect('/chat');
 });
 app.get('/chat',function (req,res,next) {
-    
+    res.render('chat');
 });
 //监听
 http.listen(3000);

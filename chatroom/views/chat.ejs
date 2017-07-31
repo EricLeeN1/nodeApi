@@ -7,29 +7,45 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Document</title>
     <style>
-        div form {
+        div.form {
             width: 700px;
-            height: 30px;
             padding: 40px;
             border: 1px solid black;
             margin: 0 auto;
             display: flex;;
             align-items: center;;
             justify-content: space-around;
+            flex-direction: column;
         }
 
         #name {
             font-size: 30px;
         }
+        .caozuo{
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 100px;
+            display: flex;
+            align-items: center;
+            background-color: yellow;
+            justify-content: center;
+        }
     </style>
 </head>
 <body>
-<div>
-    <form action="/check" method="get">
-        输入昵称：
-        <input type="text" id="name" name="name">
-        <input type="submit" value="进入聊天室">
-    </form>
+<div class="form">
+    <h1>小小聊天室</h1>
+    <div>
+        <ul class="list">
+
+        </ul>
+    </div>
+    <div class="caozuo">
+        <p><input type="text" id="content"></p>
+        <p><input type="button" id="sub" value="发言"></p>
+    </div>
 </div>
 </body>
 </html>
