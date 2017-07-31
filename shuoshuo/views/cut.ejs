@@ -50,8 +50,6 @@
         }
 
         #target {
-            width: 500px;
-            height:auto;
         }
         .alert{
             display: none;
@@ -59,10 +57,12 @@
     </style>
 </head>
 <% include header.ejs %>
-<div class="container">
+<div class="container-fluid">
     <!-- Example row of columns -->
-    <div class="row col-lg-6">
+    <div class="container">
         <h2>裁剪页面</h2>
+    </div>
+    <div class="row col-lg-6">
         <img src="/avatar/<%= avatar %>" id="target" alt="[Jcrop Example]"/>
 
         <div id="preview-pane">

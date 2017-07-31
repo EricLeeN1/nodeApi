@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- 上述3个meta标签*必须*放在最前面，任何其他内容都*必须*跟随其后！ -->
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <link rel="icon" href="/favicon.ico">
+
+    <title>所有成员 - 班级说说</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="/css/bootstrap.css" rel="stylesheet">
+
+    <!-- Custom styles for this template -->
+    <link href="/css/jumbotron.css" rel="stylesheet">
+    <style>
+        .alert {
+            display: none;
+        }
+
+        .grid {
+            height: 250px;
+        }
+    </style>
+</head>
+
+<body>
+
+<% include header.ejs %>
+
+<!-- Main jumbotron for a primary marketing message or call to action -->
+<div class="jumbotron">
+    <!--没有登录时候显示登录提示-->
+    <div class="container">
+        <h2>所有成员</h2>
+        <div class="row">
+            <div class="col-lg-8 col-md-8  col-lg-offset-2 col-md-offset-2">
+                <% for(var i = 0;i < userlists.length;i++){ %>
+                <li data-id="<%= userlists[i]._id%>">
+                    <img src="/avatar/<%= userlists[i].avatar%>" alt=""><p><%= userlists[i].username%></p>
+                </li>
+                <% } %>
+            </div>
+        </div>
+    </div>
+</div>
+
+<footer class="container">
+    <p>&copy; 2016 Company, Inc.</p>
+</footer>
+
+
+<script src="/js/jquery-1.12.0.min.js"></script>
+<script src="/js/bootstrap.min.js"></script>
+
+</body>
+</html>

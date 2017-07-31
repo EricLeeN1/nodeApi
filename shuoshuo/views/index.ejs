@@ -20,6 +20,14 @@
         .alert {
             display: none;
         }
+
+        .grid {
+            height: 250px;
+        }
+
+        .avatar {
+            border-radius: 50%;
+        }
     </style>
 </head>
 
@@ -80,7 +88,8 @@
     <div class="container">
         <div class="row">
             <div class="col-lg-2 col-md-2  col-lg-offset-1 col-md-offset-1">
-                <a href="/setavatar"><img class="center-block img-thumbnail img-responsive" src="/avatar/<%= avatar %>"
+                <a href="/setavatar"><img class="center-block img-thumbnail img-circle img-responsive"
+                                          src="/avatar/<%= avatar %>"
                                           alt=""></a>
             </div>
             <div class="col-lg-6 col-md-6">
@@ -105,30 +114,83 @@
     <% } %>
 </div>
 
-<div class="container">
-    <!-- Example row of columns -->
+<main class="container">
+    <!--分页条-->
+    <nav>
+        <ul class="pagination">
+        </ul>
+    </nav>
+    <!--20条记录-->
     <div class="row">
-        <% for(var i =0;i<blogs.length;i++){%>
-        <div class="col-md-4">
-            <h3><img class="img-respensive" src="/avatar/<%= blogs[i].username %>.jpg" alt=""><%= blogs[i].username%>说:</h3>
-            <p><%= blogs[i].content%></p>
-            <p><a class="btn btn-default" href="#" role="button">View details &raquo;</a></p>
-        </div>
-        <%}%>
     </div>
-
-    <hr>
-
-    <footer>
-        <p>&copy; 2016 Company, Inc.</p>
-    </footer>
-</div> <!-- /container -->
-
+</main> <!-- /container -->
+<footer class="container">
+    <p>&copy; 2016 Company, Inc.</p>
+</footer>
+<script type="text/template" id="mode">
+    <div class="col-md-4 grid">
+        <h4><img class="img-thumbnail img-circle" src="/avatar/{{=username}}.jpg" alt="">{{=username}}说:</h4>
+        <p>{{=content}}</p>
+        <p>{{=formatTime}}</p>
+        <p><a class="btn btn-default" href="#" role="button">查看详细&raquo;</a></p>
+    </div>
+</script>
 
 <script src="/js/jquery-1.12.0.min.js"></script>
 <script src="/js/bootstrap.min.js"></script>
+<script src="/js/underscore-noConflict.js"></script>
 <script>
     $(function () {
+        //页数设置
+        $.get('/getblogscount', function (result) {
+            console.log(result.number);
+            var amount = parseInt(result.number),
+                pageAmount = Math.ceil(amount/20);
+            if (result.msgcode == 1) {
+                for (var i = 1; i <= pageAmount; i++) {
+                    $('.pagination').append("<li data-page="+i+" ><a href='javascript:;'>"+i+"</a></li>");
+                }
+            } else {
+                alert(result.msg);
+            }
+            $('.pagination>li').on('click',function () {
+                var pageCurrent =$(this).attr('data-page');
+                getPage(pageCurrent);
+            })
+        });
+        
+        //ajax读取文章列表
+        var compiled = _.template($("#mode").html());
+        getPage(0);
+        function getPage(page) {
+            //清除页面内容
+            $("main>.row").html('');
+            $.ajax({
+                url: '/getallblogs?page='+page, async: false, success: function (res) {
+                    console.log(res);
+                    if (res.msgcode == 1) {
+                        iterator(page);
+
+                    } else {
+                        alert(res.msg);
+                    };
+                    function iterator(i) {
+                        if (i == res.result.length) {
+                            //这里书写请求完成之后的事情
+                            return;
+                        }
+                        $.get("/getuserinfo?username=" + res.result[i].username, function (resUser) {
+                                res.result[i].avatar = resUser.avatar;
+                                var htmlString = compiled(res.result[i]);
+                                $("main>.row").append($(htmlString));
+                                iterator(i + 1);
+                            }
+                        );
+                    };
+                }
+            });
+        }
+       //        迭代器
 //ajax提交表单注册
         $('input').on('focus', function () {
             $('.alert').fadeOut();

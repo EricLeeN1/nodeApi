@@ -26,5 +26,11 @@ app.post('/cutavatar',router.showcutAvatar);
 app.get('/cut',router.showCut);
 app.get('/docut',router.checkCut);
 app.post('/publishblog',router.publishBlog);
+app.get('/getallblogs',router.getAllBlogs);    //列出所有说说
+app.get('/getuserinfo',router.getUserInfo);    //列出用户信息
+app.get('/getblogscount',router.getBlogsCount);    //列出用户信息
+app.get('/user/:username',router.showUser);
+app.get('/blogs/:oid',router.showblogs);
+app.get('/userlist',router.showUserList);
 
 app.listen(3000);

@@ -25,13 +25,13 @@ exports.showIndex = function (req, res, next) {
         } else {
             var avatar = result[0].avatar;
         }
-        db.find('blogs',{},function (err,resultblogs) {
+        db.find('blogs', {}, function (err, resultblogs) {
             res.render('index', {
                 "login": login,
                 "username": username,
                 "active": "index",
                 "avatar": avatar,
-                "blogs":resultblogs
+                "blogs": resultblogs
             });
         });
     });
@@ -259,7 +259,7 @@ exports.publishBlog = function (req, res, next) {
             "username": username,
             "content": content,
             "time": time,
-            "formatTime":formatTime
+            "formatTime": formatTime
         }, function (err, result) {
             if (err) {
                 res.json({
@@ -275,5 +275,132 @@ exports.publishBlog = function (req, res, next) {
                 return;
             }
         })
+    });
+};
+
+//列出所有说说
+exports.getAllBlogs = function (req, res, next) {
+    var page = req.query.page;
+    db.find('blogs', {}, {"pagesize": 10, "page": page, "sort": {"time": -1}}, function (err, result) {
+        if (err) {
+            res.json({
+                mgscode: -3,
+                msg: "服务器错误"
+            });
+            return;
+        } else {
+            res.json({
+                "result": result,
+                "msg": "获取成功！",
+                "msgcode": 1
+            });
+        }
+        ;
+    });
+};
+//列出用户信息
+exports.getUserInfo = function (req, res, next) {
+    var username = req.query.username;
+    db.find('users', {"username": username}, function (err, result) {
+        var obj = {
+            "username": result[0].user,
+            "avatar": result[0].avatar,
+            "_id": result[0]._id
+        };
+        if (err) {
+            res.json({
+                "mgscode": -3,
+                "msg": "服务器错误"
+            });
+        } else {
+            res.json({
+                "result": obj,
+                "msg": "获取成功！",
+                "msgcode": 1
+            });
+        }
+    });
+};
+// 列出说说总数
+exports.getBlogsCount = function (req, res, next) {
+    db.count('blogs', function (err, result) {
+        if (err) {
+            res.json({
+                mgscode: -3,
+                msg: "服务器错误"
+            });
+            return;
+        } else {
+            res.json({
+                "number": result,
+                "msg": "获取成功！",
+                "msgcode": 1
+            });
+        }
+        ;
+    });
+};
+//用户主页
+exports.showUser = function (req, res, next) {
+    var user = req.params['username'];
+    console.log(user);
+    db.find('blogs', {"username": user}, function (err, result) {
+        if (err) {
+            res.send('你还没有登录呢');
+            return;
+        } else {
+            db.find('users', {"username": user}, function (err, resultUser) {
+                console.log(resultUser);
+                if (err) {
+                    res.send('你还没有登录呢');
+                    return;
+                } else {
+                    res.render('user', {
+                        "login": req.session.login == "1" ? true : false,
+                        "username": req.session.login == "1" ? req.session.username : "",
+                        "active": "username",
+                        "user": user,
+                        "blogs": result,
+                        "avatar": resultUser[0].avatar
+                    });
+                }
+            });
+
+        }
+    });
+};
+//所有用户
+exports.showUserList = function (req, res, next) {
+    db.find('users', {}, function (err, result) {
+        console.log(result);
+        if (err) {
+            res.send('你还没有登录呢');
+            return;
+        } else {
+            res.render('userlist', {
+                "login": req.session.login == "1" ? true : false,
+                "username": req.session.login == "1" ? req.session.username : "",
+                "active": "allusers",
+                "userlists": result,
+            });
+        }
+    });
+};
+//说说主页
+exports.showUser = function (req, res, next) {
+    var oid = req.params['oid'];
+    console.log(user);
+    db.find('blogs', {"_id": oid}, function (err, result) {
+        if (err) {
+            res.send('你还没有登录呢');
+            return;
+        } else {
+            res.render('user', {
+                "login": req.session.login == "1" ? true : false,
+                "username": req.session.login == "1" ? req.session.username : "",
+                "active": "username",
+                "blog": result[0],
+            });
+        }
     });
 };

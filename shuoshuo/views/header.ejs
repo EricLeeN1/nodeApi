@@ -13,8 +13,10 @@
         <div id="navbar" class="navbar-collapse collapse">
             <ul class="nav navbar-nav">
                 <li <% if(active=="index"){%> class="active" <%}%> ><a href="/">全部说说<span class="sr-only">(current)</span></a></li>
-                <li <% if(active=="my"){%> class="active" <%}%> ><a href="/my">我的说说</a></li>
-                <li <% if(active=="members"){%> class="active" <%}%> ><a href="/my">成员列表</a></li>
+                    <% if (login) { %>
+                        <li <% if(active=="username"){%> class="active" <%}%> ><a href="/user/<%= username%>">我的说说</a></li>
+                    <%}%>
+                <li <% if(active=="allusers"){%> class="active" <%}%> ><a href="/userlist">成员列表</a></li>
                 <li class="dropdown">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true"
                        aria-expanded="false">Dropdown <span class="caret"></span></a>
