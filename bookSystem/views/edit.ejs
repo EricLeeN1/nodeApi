@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="zn-ch">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+<body>
+<h1>修改页面</h1>
+<form action="/update" method="get">
+    <p>书名:<input type="text" name="name" value="<%= name %>"></p>
+    <p>作者:<input type="text" name="author" value="<%= author %>"></p>
+    <p>价格:<input type="text" name="price" value="<%= price %>"></p>
+    <input type="button" value="提交" id="submit">
+</form>
+<p id="tips"></p>
+<script src="/js/jquery-1.11.3.min.js"></script>
+<script>
+    $(function () {
+        $("#tips").hide();
+        $('#submit').on('click', function () {
+            $('#tips').fadeOut();
+            var _id = window.location.search.substr(4),
+                name = $("input[name='name']").val(),
+                author = $("input[name='author']").val(),
+                price = $("input[name='price']").val();
+            $.get('/update', {
+                name: name,
+                author: author,
+                price: price,
+                _id: _id
+            }, function (res) {
+                console.log(res);
+                if (res.msgcode == 1) {
+                    $('#tips').fadeIn().html(res.msg+'<a href="/">返回首页</a>');
+                } else {
+                    $('#tips').fadeIn().html(res.msg);
+                }
+            });
+        });
+    });
+</script>
+</body>
+</html>

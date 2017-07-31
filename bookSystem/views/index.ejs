@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="zn-ch">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <style>
+        table {
+            border: 1px solid red;
+            text-align: center;
+        }
+
+        td {
+            padding: 10px;
+        }
+    </style>
+</head>
+<body>
+<table border="1">
+    <tr>
+        <td>图书名字</td>
+        <td>oid</td>
+        <td>作者</td>
+        <td>价格</td>
+        <td>操作</td>
+    </tr>
+    <% for(var i = 0;i < booklist.length;i++){ %>
+    <tr>
+        <td><%= booklist[i].name %></td>
+        <td><%= booklist[i]._id%></td>
+        <td><%= booklist[i].author %></td>
+        <td><%= booklist[i].price %></td>
+        <td><a href="/edit?id=<%= booklist[i]._id%>">修改</a></td>
+    </tr>
+    <% } %>
+</table>
+<a href="/addbook">增加图书</a>
+</body>
+</html>
