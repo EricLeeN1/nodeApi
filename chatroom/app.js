@@ -14,6 +14,7 @@ app.use(session({
     saveUninitialized:true
 }));
 app.set('view engine', 'ejs');
+app.use(express.static('./public'));
 var alluser = [];
 //中间件
 app.get('/', function (req, res, next) {
@@ -37,8 +38,22 @@ app.get('/check', function (req,res,next) {
     req.session.name = name;
     res.redirect('/chat');
 });
+// 聊天室
 app.get('/chat',function (req,res,next) {
-    res.render('chat');
+    var name = req.session.name;
+    if (!name) {
+        res.redirect('/');
+        return;
+    }
+    res.render('chat',{
+        "name":name
+    });
 });
+io.on('connection',function (socket) {
+    socket.on('hello',function (msg) {
+        //把接收到的msg原样呈递
+       io.emit('hi',msg);
+    });
+})
 //监听
 http.listen(3000);

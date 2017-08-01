@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>socket</title>
+    <style>
+        canvas {
+            border: 1px solid red;
+        }
+    </style>
+</head>
+<body>
+<canvas width="800" height="800" id="myCanvas"></canvas>
+<script type="text/javascript" src="/socket.io/socket.io.js"></script>
+<script type="text/javascript">
+    var socket = io();
+    var canvas = document.getElementById('myCanvas');
+    var ctx = canvas.getContext('2d');
+    var color = ["white","red", "orange", "yellow", "green", "blue", "skyblue", "purple"];
+    var mycolor = color[parseInt(Math.random() * color.length)];
+    canvas.onmousedown = function () {
+        canvas.addEventListener('mousemove', handler, true);
+    };
+    canvas.onmouseup = function () {
+        canvas.removeEventListener('mousemove', handler, true);
+    };
+    function handler(e) {
+        ctx.beginPath();
+        ctx.arc(e.pageX, e.pageY, 20, 0, Math.PI * 2, true);
+        ctx.fillStyle = mycolor;
+        ctx.fill();
+
+        //触发事件
+        socket.emit('draw', {"x": e.pageX, "y": e.pageY, "color": mycolor});
+    };
+    socket.on('huida', function (msg) {
+        ctx.beginPath();
+        ctx.arc(msg.x, msg.y, 20, 0, Math.PI * 2, true);
+        ctx.fillStyle = msg.color;
+        ctx.fill();
+    });
+</script>
+</body>
+</html>

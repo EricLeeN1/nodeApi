@@ -8,7 +8,7 @@
     <title>Document</title>
     <style>
         div.form {
-            width: 700px;
+            width: 1200px;
             padding: 40px;
             border: 1px solid black;
             margin: 0 auto;
@@ -21,7 +21,12 @@
         #name {
             font-size: 30px;
         }
-        .caozuo{
+
+        .list {
+            width: 100%;
+        }
+
+        .caozuo {
             position: fixed;
             bottom: 0;
             left: 0;
@@ -29,14 +34,14 @@
             height: 100px;
             display: flex;
             align-items: center;
-            background-color: yellow;
+            background-color: #666;
             justify-content: center;
         }
     </style>
 </head>
 <body>
 <div class="form">
-    <h1>小小聊天室</h1>
+    <h1>小小聊天室 欢迎-<span id="name"><%= name %></span></h1>
     <div>
         <ul class="list">
 
@@ -47,5 +52,25 @@
         <p><input type="button" id="sub" value="发言"></p>
     </div>
 </div>
+<script src="/socket.io/socket.io.js"></script>
+<script src="/js/jquery-1.12.0.min.js"></script>
+<script type="text/javascript">
+    var socket = io();
+    $('#content').keydown(function (e) {
+        //把文本框的内容上传
+        console.log(e.keyCode);
+        if (e.keyCode == 13) {
+            socket.emit('hello', {
+                "content": $("#content").val(),
+                "name": $("#name").html(),
+                "time": new Date()
+            });
+            $(this).val('');
+        }
+    });
+    socket.on('hi', function (msg) {
+        $('.list').append('<li style="overflow: hidden;"><b>' + msg.name + '</b>' + ':&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;' + msg.content + '<span style="float: right">' + msg.time + '</span></li>');
+    });
+</script>
 </body>
 </html>
