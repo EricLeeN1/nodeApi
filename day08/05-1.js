@@ -28,6 +28,11 @@ courseSchema.methods.addStudent = function (studentObj, callback) {
         callback();
     });
 };
+courseSchema.methods.findStudentByName=function (num,callback) {
+    Student.findOne({"name":this.student[num].name},function (err,result) {
+        callback(err,result);
+    });
+};
 var Course = mongoose.model('Course', courseSchema);
 
 // 实例化对象
@@ -49,8 +54,9 @@ var Course = mongoose.model('Course', courseSchema);
 //     student.sex="女";
 //     student.save();
 // });
+// 通过课程找同学
 Course.findOne({"name":"数学课"},function (err,course) {
-    var student = course.student[0];
-    course.student[0].age++;
-    course.save();
+    course.findStudentByName(0,function (err,result) {
+        console.log(result);
+    })
 });
